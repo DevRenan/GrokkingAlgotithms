@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+def quicksort(array)
+  return array if array.size < 2
+
+  pivot = array.first
+  less = array.select{|i| i < pivot}
+  greater = array.select{|i| i > pivot}
+
+  quicksort(less) + [pivot] + quicksort(greater)
+end
+
+puts quicksort([1, 2, 3, 4, 5, 6,4,1024,80,-10,-20,-30])
