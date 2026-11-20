@@ -18,34 +18,17 @@ class MiniWebServer
 
   # 2. Filtrando duplicatas em O(1)
   def registrar_voto(ip, candidato)
-    if @ips_que_votaram[ip].nil?
-      @ips_que_votaram[ip] = candidato
-    else
-      "BLOQUEADO: IP #{ip} já votou!"
-    end
-
+    return "BLOQUEADO: IP #{ip} já votou!" if @ips_que_votaram.key?(ip)
+    @ips_que_votaram[ip] ||= candidato
   end
 
   # 3. Caching / Memoization em O(1)
   def buscar_pagina(url)
-    # TODO: Verifique se a `url` já existe em `@cache`.
-    # Se existir, retorne "[CACHE HIT] #{@cache[url]}"
-    # Se NÃO existir:
-    #   1. Verifique se a `url` existe em `ROTAS` (se não existir, retorne "404 - Página não encontrada")
-    #   2. Simule trabalho pesado do servidor com `sleep(1.5)`
-    #   3. Monte o conteúdo: "HTML renderizado de: #{ROTAS[url]}"
-    #   4. Salve no `@cache` e retorne "[SERVER RENDER] #{conteudo}"
-
-    if @cache[url]
-      "[CACHE HIT] #{@cache[url]}"
-    elsif ROTAS[url]
-      sleep(1.5)
-      conteudo = "HTML renderizado de: #{ROTAS[url]}"
-      @cache[url] = conteudo
-      "[SERVER RENDER] #{conteudo}"
-    else
-      "404 - Página não encontrada"
-    end
+    return "404 - Página não encontrada" unless ROTAS.key?(url)
+    @cache[url] ||= begin
+                      sleep(1.5)
+                      "HTML renderizado de: #{ROTAS[url]}"
+                    end
   end
 end
 
